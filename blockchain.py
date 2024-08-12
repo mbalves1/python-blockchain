@@ -1,3 +1,5 @@
+# Flask 3.0.3 pip install Flask=3.0.3
+
 import datetime
 import hashlib
 import json
@@ -6,6 +8,7 @@ from flask import Flask, jsonify
 # Part 1 - Building a Blockchain
 
 class Blockchain:
+
   def __init__(self):
     self.chain = []
     self.create_block(proof = 1, previous_hash = '0')
@@ -59,6 +62,7 @@ class Blockchain:
 
 # Creating a Web App
 app = Flask(__name__)
+# app.config['JSONFY_PRETTYPRINT_REGULAR'] = False
 
 # Creating a Blockchain
 blockchain = Blockchain()
@@ -74,9 +78,21 @@ def mine_block():
   response = {
     'message': 'Congratulations, you just mined a block!',
     'index': block['index'],
-    'timestamp': block['timestam'],
+    'timestamp': block['timestamp'],
     'proof': block['proof'],
-    'previous_hash': block['previous_hash'],
+    'previous_hash': block['previous_hash']
   }
 
   return jsonify(response), 200
+
+# Getting the full Blockchain
+@app.route('/get_chain', methods = ['GET'])
+def get_chain():
+  response = {
+    'chain': blockchain.chain,
+    'length': len(blockchain.chain),
+  }
+  return jsonify(response), 200
+
+# Running the app
+app.run(host = '0.0.0.0', port = 5000)
